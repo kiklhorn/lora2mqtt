@@ -22,7 +22,10 @@ void loop()
 {
     Serial.print("Sending packet: ");
     Serial.println(counter);
-
+      // Serial.print("' SF: ");
+      // Serial.print(LoRa.getSpreadingFactor()); //changed from private to public in the LoRa.h library
+      // Serial.print("' BW: ");
+      // Serial.println(LoRa.getSignalBandwidth());
     // send packet
     LoRa.beginPacket();
     // LoRa.print("hello ");

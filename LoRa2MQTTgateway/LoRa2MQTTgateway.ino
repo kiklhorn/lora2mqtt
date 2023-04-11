@@ -7,7 +7,8 @@
 // mqtt autodiscovery - multiple clients=senders (similar as z2m devices?) https://github.com/plapointe6/HAMqttDevice
 // transmission encryption
 // clients authorization
-// duplex comm  https://github.com/sandeepmistry/arduino-lora
+// duplex comm  https://github.com/sandeepmistry/arduino-lora  https://hutscape.com/tutorials/lora-duplex-a https://www.youtube.com/watch?v=tO1hYr6hNa4 
+// Automatic data rate - https://www.thethingsnetwork.org/docs/lorawan/spreading-factors/
 
 #include <LoRa.h>
 #include "boards.h"
@@ -122,7 +123,7 @@ void loop()
       Serial.print("' SNR: ");
       Serial.println(LoRa.packetSnr());
       // Serial.print("' SF: ");
-      // Serial.print(LoRa.getSpreadingFactor());
+      // Serial.print(LoRa.getSpreadingFactor()); //changed from private to public in the LoRa.h library
       // Serial.print("' BW: ");
       // Serial.println(LoRa.getSignalBandwidth());
       // Serial.println(schranka.getConfigTopic());

@@ -1,0 +1,6 @@
+LoRa2MQTTgateway/utilities.h
+LoRa2MQTTdevice/utilities.h
+
+After push local with fake credentials, set is as:
+C:\Users\marti\OneDrive\Dokumenty\Arduino\lora2mqtt\lora2mqtt\LoRa2MQTTgateway>git update-index --assume-unchanged "utilities.h"
+then change it locally

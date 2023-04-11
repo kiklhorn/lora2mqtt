@@ -65,7 +65,9 @@ void setup()
         while (1);
     }
     LoRa.setSpreadingFactor(lora_spreading_factor);
+#ifdef HAS_DISPLAY
     u8g2->begin();
+#endif
     // Serial.begin(115200); //starte den seriellen Monitor mit der angegebenen Baud Rate
     WiFi.begin(wifi_ssid, wifi_password); // Connect to WiFi network
     Serial.println("");
@@ -119,6 +121,10 @@ void loop()
       Serial.print(LoRa.packetRssi());
       Serial.print("' SNR: ");
       Serial.println(LoRa.packetSnr());
+      // Serial.print("' SF: ");
+      // Serial.print(LoRa.getSpreadingFactor());
+      // Serial.print("' BW: ");
+      // Serial.println(LoRa.getSignalBandwidth());
       // Serial.println(schranka.getConfigTopic());
       // Serial.println(schranka.getConfigPayload());
       // Serial.println(schranka.getAttributesTopic());

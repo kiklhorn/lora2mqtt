@@ -16,6 +16,15 @@ void setup()
         while (1);
     }
     LoRa.setSpreadingFactor(lora_spreading_factor);
+    LoRa.channelActivityDetection();
+    // nastavení konfiguračního registru pro CRC
+    LoRa.enableCrc();
+    // LoRa.setPacketCrcOn(true);
+
+    // nastavení registru pro délku očekávané zprávy
+    LoRa.setPreambleLength(68);
+    LoRa.setSyncWord(0x5A);
+    LoRa.dumpRegisters(Serial);    
 }
 
 void loop()

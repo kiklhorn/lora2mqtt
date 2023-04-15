@@ -37,24 +37,20 @@ byte destinationAddress = 0xBB;
 long lastSendTime = 0;
 int interval = 2000;
 int count = 0;
-bool justreceiving = false, justsending = false;
 
 void sendData(){
-
-    justsending = true;
     sendMessage("Sending String Message");
     Serial.print("Sending String Message");
-    justsending = false;
     mySwitch.setState(!mySwitch.getCurrentState()); //Just toggle switch for testing. Othervise need ACK from end device.  
 }
 
-void onMessage(const char* topic, const uint8_t* payload, uint16_t length) {
+void onMqttMessage(const char* topic, const uint8_t* payload, uint16_t length) {
     // this method will be called each time the device receives an MQTT message
     // https://dawidchyrzynski.github.io/arduino-home-assistant/documents/library/mqtt-advanced.html
-    sendData();
+    LoRa.channelActivityDetection(); // put the radio into CAD mode
 }
 
-void onConnected() {
+void onMqttConnected() {
     // this method will be called when connection to MQTT broker is established
     // https://dawidchyrzynski.github.io/arduino-home-assistant/documents/library/mqtt-advanced.html
 
@@ -73,12 +69,12 @@ void setup()
     }
     LoRa.setSpreadingFactor(lora_spreading_factor);
     // LoRa.setCADTimeout(1000); // timeout pro CAD funkci (v milisekundách)
-    LoRa.onCadDone(onCadDone);// register the channel activity dectection callback
-    LoRa.onReceive(onReceive); // register the receive callback
+    LoRa.onCadDone(onLoraCadDoneCallback);// register the channel activity dectection callback
+    LoRa.onReceive(onLoraRxCallback); // register the receive callback
+    LoRa.onTxDone(onLoraTxDoneCallback); // register the after transmit callback
     LoRa.enableCrc(); // nastavení konfiguračního registru pro CRC
-    LoRa.setPreambleLength(68); // nastavení registru pro délku očekávané zprávy
+    LoRa.setPreambleLength(lora_spreading_factor+4); // nastavení registru pro délku očekávané zprávy
     LoRa.setSyncWord(lora_network_id);
-    LoRa.channelActivityDetection(); // put the radio into CAD mode
     LoRa.dumpRegisters(Serial);
 
 #ifdef HAS_DISPLAY
@@ -108,8 +104,8 @@ void setup()
     device.enableLastWill();
     // device.setAvailability(false); // changes default state to offline
 
-    mqtt.onMessage(onMessage); // https://dawidchyrzynski.github.io/arduino-home-assistant/documents/library/mqtt-advanced.html
-    mqtt.onConnected(onConnected); //https://dawidchyrzynski.github.io/arduino-home-assistant/documents/library/mqtt-advanced.html
+    mqtt.onMessage(onMqttMessage); // https://dawidchyrzynski.github.io/arduino-home-assistant/documents/library/mqtt-advanced.html
+    mqtt.onConnected(onMqttConnected); //https://dawidchyrzynski.github.io/arduino-home-assistant/documents/library/mqtt-advanced.html
     // MQTT broker connection (use your data here)
     mqtt.begin(mqtt_broker_address, mqtt_broker_port, mqtt_user, mqtt_password);
     // mqtt.setDiscoveryPrefix("lora2mqtt");
@@ -127,7 +123,7 @@ void loop()
   //   receiveMessage(LoRa.parsePacket());
   //   }
 }
-void onCadDone(boolean signalDetected) {
+void onLoraCadDoneCallback(boolean signalDetected) {
   // detect preamble
   if (signalDetected) {
     Serial.println("Signal detected");
@@ -145,7 +141,7 @@ void onCadDone(boolean signalDetected) {
   }
 }
 
-void onReceive(int packetSize) {
+void onLoraRxCallback(int packetSize) {
   // received a packet
   Serial.print("Received packet '");
 
@@ -160,6 +156,10 @@ void onReceive(int packetSize) {
 
   // put the radio into CAD mode
   // LoRa.channelActivityDetection();
+}
+
+void onLoraTxDoneCallback() {
+  Serial.println("Transmission successful!");
 }
 
 void sendMessage(String outgoing) {
@@ -225,7 +225,6 @@ void receiveMessage(int packetSize) {
       while (LoRa.available()) {
           recv += (char)LoRa.read();
       }
-      justreceiving = false;
       schranka.setValue(recv.c_str());
       Serial.print(recv);
       // print RSSI of packet

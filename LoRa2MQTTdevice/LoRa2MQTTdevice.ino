@@ -1,5 +1,16 @@
 #include <LoRa.h>
 #include "boards.h"
+//dirty hack to keep common files located on MS OneDrive (IDK why relative paths not working here) in one place only - development time
+#if __has_include("../LoRa2MQTTgateway/settings.h")  
+#include "../LoRa2MQTTgateway/settings.h"
+#include "../LoRa2MQTTgateway/structures.h"
+#else if __has_include("C:\Users\marti\OneDrive\Dokumenty\Arduino\lora2mqtt\lora2mqtt\LoRa2MQTTgateway\settings.h")
+#include "C:\Users\marti\OneDrive\Dokumenty\Arduino\lora2mqtt\lora2mqtt\LoRa2MQTTgateway\settings.h"
+#include "C:\Users\marti\OneDrive\Dokumenty\Arduino\lora2mqtt\lora2mqtt\LoRa2MQTTgateway\structures.h"
+#endif
+// end of dirty hack. 
+
+
 
 int counter = 0;
 
@@ -10,21 +21,7 @@ void setup()
     delay(1500);
 
     Serial.println("LoRa Sender");
-    LoRa.setPins(RADIO_CS_PIN, RADIO_RST_PIN, RADIO_DIO0_PIN);
-    if (!LoRa.begin(LoRa_frequency)) {
-        Serial.println("Starting LoRa failed!");
-        while (1);
-    }
-    LoRa.setSpreadingFactor(lora_spreading_factor);
-    LoRa.channelActivityDetection();
-    // nastavení konfiguračního registru pro CRC
-    LoRa.enableCrc();
-    // LoRa.setPacketCrcOn(true);
-
-    // nastavení registru pro délku očekávané zprávy
-    LoRa.setPreambleLength(68);
-    LoRa.setSyncWord(0x5A);
-    LoRa.dumpRegisters(Serial);    
+    initLora();    
 }
 
 void loop()

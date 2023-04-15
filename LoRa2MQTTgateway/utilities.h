@@ -1,15 +1,6 @@
-
 #pragma once
-const char* wifi_ssid = "ssid";
-const char* wifi_password = "pass";
-const char* mqtt_broker_address = "homeassistant.local";
-const int mqtt_broker_port = 1883;
-const char* mqtt_user = "";
-const char* mqtt_password = "";
-const char* mqtt_client = "loragw";
-const char* mqtt_discovery_prefix = "homeassistant"; //https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery
-const int max_lora_devices = 6;
-const int lora_spreading_factor = 10; // From 7(high speed, "low" range) to 12(low speed, high range) 
+
+#define HAS_DISPLAY
 
 /*
 * arduinoLoRa Library just only support SX1276/Sx1278,Not support SX1262
@@ -84,7 +75,7 @@ const int lora_spreading_factor = 10; // From 7(high speed, "low" range) to 12(l
 
 #define GPS_BAUD_RATE               9600
 #define HAS_GPS
-// #define HAS_DISPLAY                 //Optional, bring your own board, no OLED !!
+#define HAS_DISPLAY                 //Optional, bring your own board, no OLED !!
 
 #elif defined(LILYGO_T3_V1_0)
 #define I2C_SDA                     4
@@ -194,3 +185,12 @@ const int lora_spreading_factor = 10; // From 7(high speed, "low" range) to 12(l
 #else
 #error "For the first use, please define the board version and model in <utilities. h>"
 #endif
+
+
+
+
+
+
+
+
+
